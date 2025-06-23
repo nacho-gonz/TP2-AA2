@@ -1,0 +1,6 @@
+env
+venv
+# Ignore pycache files
+*__pycache__*
+
+*.pkl
