@@ -33,9 +33,12 @@ class QAgent(Agent):
         self.num_bins = {
             'relative_pos_y': 25, # 25 valores (a definir)
             'player_velocity': 3,
-            'relative_pos_x': 10
+            'relative_pos_x': 12,
+            'distancia_critica_y' : 3
         }
-        self.player_v_threshold = 4
+        self.player_v_threshold = 3
+        self.tuberia_y_threshold_up = 20
+        self.tuberia_y_threshold_bottom = -20
 
     def discretize_state(self, state):
         """
@@ -61,9 +64,18 @@ class QAgent(Agent):
         distancia_tuberia_norm =  state['next_pipe_dist_to_player']/self.game.width
         dist_tuberia_bin = int(np.clip(distancia_tuberia_norm * self.num_bins['relative_pos_x'], 0, self.num_bins['relative_pos_x'] - 1))
 
+        # 4 distnaicas criticas entre tuberias
 
-        
-        return (relative_pos_y_bin, player_velocity_sign_bin, dist_tuberia_bin)
+        centro_hueco_tuberia_next = (state['next_next_pipe_top_y'] + state['next_next_pipe_bottom_y']) * 0.50
+        pos_rel_centro_hueco_tuberia_next = centro_hueco_tuberia_next - state['player_y']
+        if pos_rel_centro_hueco_tuberia_next >= self.tuberia_y_threshold_up:
+            relative_critic_y_bin = 0
+
+        elif pos_rel_centro_hueco_tuberia_next < self.tuberia_y_threshold_bottom:
+            relative_critic_y_bin = 1
+        else:
+            relative_critic_y_bin = 2
+        return (relative_pos_y_bin, player_velocity_sign_bin, dist_tuberia_bin, relative_critic_y_bin)
 
     def act(self, state):
         """

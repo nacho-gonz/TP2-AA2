@@ -4,7 +4,6 @@ import tensorflow as tf
 from tensorflow import keras
 from tensorflow.keras import layers
 
-r2 = keras.metrics.R2Score()
 # --- Cargar Q-table entrenada ---
 QTABLE_PATH = 'flappy_birds_q_table.pkl'  # Cambia el path si es necesario
 with open(QTABLE_PATH, 'rb') as f:
@@ -19,21 +18,20 @@ for state, q_values in q_table.items():
     y.append(q_values)
 X = np.array(X)
 y = np.array(y)
-
+print(X.shape)
 n_actions = y.shape[1]
 
 # --- Definir la red neuronal ---
 model = keras.Sequential([
     # COMPLETAR: Definir la arquitectura de la red neuronal
-    layers.Dense(128, activation='relu', input_shape=(X.shape[1],)),
-    layers.Dropout(0.2), 
-    layers.Dense(128, activation='relu'),
-    layers.Dense(128, activation='relu'),
-    layers.Dropout(0.2),
+    layers.Dense(128, activation='tanh', input_shape=(X.shape[1],)),
+    layers.Dense(128, activation='tanh'),
+    layers.Dense(256, activation='tanh'),
+    layers.Dense(128, activation='tanh'),
     layers.Dense(n_actions, activation='linear')
 ])
 
-model.compile(optimizer='adam', loss='mse', metrics=['R2Score'])
+model.compile(optimizer='adam', loss='mse', metrics=['R2Score', 'mae'])
 
 # # --- Entrenar la red neuronal ---
 # # COMPLETAR: Ajustar hiperparámetros según sea necesario
