@@ -24,10 +24,12 @@ n_actions = y.shape[1]
 # --- Definir la red neuronal ---
 model = keras.Sequential([
     # COMPLETAR: Definir la arquitectura de la red neuronal
-    layers.Dense(128, activation='tanh', input_shape=(X.shape[1],)),
-    layers.Dense(128, activation='tanh'),
-    layers.Dense(256, activation='tanh'),
-    layers.Dense(128, activation='tanh'),
+    layers.Dense(128, activation='relu', input_shape=(X.shape[1],)),
+    layers.Dropout(0.2),
+    layers.Dense(128, activation='relu'),
+    layers.Dense(128, activation='relu'),
+    layers.Dropout(0.2),
+    layers.Dense(128, activation='relu'),
     layers.Dense(n_actions, activation='linear')
 ])
 
